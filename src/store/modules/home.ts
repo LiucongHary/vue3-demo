@@ -1,6 +1,7 @@
 import { Module } from 'vuex'
 import { CATOGORY_TYPES, HomeState } from '@/typing/index'
 import { GlobalState } from '..'
+import * as Types from '../action-types'
 
 // 首页存储的数据
 const state: HomeState = {
@@ -13,13 +14,17 @@ const state: HomeState = {
     limit: 5,
     list: [] // 当前显示在页面上课程
   }
-
 }
 
 // Module  参数1 自己状态 2 全局状态
 const home: Module<HomeState, GlobalState> = {
   namespaced: true,
-  state
+  state,
+  mutations: {
+    [Types.SET_CATEGORY] (state, payload: CATOGORY_TYPES) {
+      state.currentCategory = payload
+    }
+  }
 }
 
 export { home }
