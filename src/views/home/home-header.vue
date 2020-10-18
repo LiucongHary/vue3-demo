@@ -55,6 +55,7 @@ export default defineComponent({
   top: 0;
   left: 0;
   padding: 0 10px;
+  z-index:1;
 }
 .van-dropdown-menu {
   padding: 0 28px;

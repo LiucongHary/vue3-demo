@@ -1,17 +1,23 @@
 <template>
   <div class="home">
     <!-- 头部 -->
-    {{ category }}
     <homeHeader
       :category="category"
       @setCurrentCategory="setCurrentCategory"
     ></homeHeader>
 
     <!-- 轮播图 -->
-    <homeSwiper></homeSwiper>
+    <div style="margin-top:65px">
+      <!-- <template #default> -->
+      <homeSwiper></homeSwiper>
+      <!-- </template> -->
+      <!-- <template #fallback>
+        <div>loading...</div>
+      </template> -->
+    </div>
 
     <!-- 列表 -->
-    <homeList></homeList>
+    <homeList :lessonList="lessonList"></homeList>
   </div>
 </template>
 
@@ -19,7 +25,7 @@
 /* eslint-disable space-before-function-paren */
 import { GlobalState } from '@/store'
 // import {IGlobalState} from '../../store/index'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import { Store, useStore } from 'vuex'
 import homeHeader from './home-header.vue'
 import homeSwiper from './home-swiper.vue'
@@ -37,6 +43,20 @@ function useCategory(store: Store<GlobalState>) {
   return { category, setCurrentCategory }
 }
 
+function useLessonList(store: Store<GlobalState>) {
+  const lessonList = computed(() => {
+    return store.state.home.lessons.list
+  })
+  onMounted(() => {
+    if (!lessonList.value.length) {
+      store.dispatch(`home/${Types.SET_LESSON_LIST}`)
+    }
+  })
+  return {
+    lessonList
+  }
+}
+
 export default defineComponent({
   name: 'Home',
   components: {
@@ -46,12 +66,16 @@ export default defineComponent({
   },
 
   setup() {
+    // 分类
     const store = useStore<GlobalState>()
-
     const { category, setCurrentCategory } = useCategory(store)
+
+    // 列表获取
+    const { lessonList } = useLessonList(store)
     return {
       category,
-      setCurrentCategory
+      setCurrentCategory,
+      lessonList
     }
   }
 })
